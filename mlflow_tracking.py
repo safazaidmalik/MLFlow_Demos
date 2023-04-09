@@ -3,6 +3,7 @@
 
 
 import mlflow
+from mlflow.models.signature import infer_signature
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_diabetes
 from sklearn.ensemble import RandomForestRegressor
@@ -32,6 +33,9 @@ with mlflow.start_run(run_name="run_without_artifacts_logged", description=desc)
     # train model
     rfr.fit(X_train, y_train)
 
+    # signature tells what a model gets as input and generates as output
+    signature = infer_signature(X_train, rfr.predict(X_test))
+
     # log paramters
     mlflow.log_params(params)           # log paramters set above
     # add a single param separately
@@ -46,5 +50,7 @@ with mlflow.start_run(run_name="run_without_artifacts_logged", description=desc)
     # log the model as an artifact (.pkl) along with its dependencies, i.e. conda.yaml, python_env.yaml, MLmodel & requirements.txt
     mlflow.sklearn.log_model(
         sk_model=rfr,
-        artifact_path="random_forest_regressor"
+        artifact_path="random_forest_regressor",
+        signature=signature,    # describes model input and output Schema
+
     )
