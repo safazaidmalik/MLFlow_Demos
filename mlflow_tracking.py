@@ -42,3 +42,9 @@ with mlflow.start_run(run_name="run_without_artifacts_logged", description=desc)
 
     # set self a tag to the run
     mlflow.set_tag("my_tag", "my_tag_value")
+
+    # log the model as an artifact (.pkl) along with its dependencies, i.e. conda.yaml, python_env.yaml, MLmodel & requirements.txt
+    mlflow.sklearn.log_model(
+        sk_model=rfr,
+        artifact_path="random_forest_regressor"
+    )
